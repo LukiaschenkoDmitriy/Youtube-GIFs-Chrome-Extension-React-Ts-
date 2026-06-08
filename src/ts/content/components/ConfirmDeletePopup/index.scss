@@ -1,0 +1,111 @@
+// ── Overlay ───────────────────────────────────────────────────────────────────
+
+.cdp-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: cdp-overlay-in 0.15s ease;
+}
+
+@keyframes cdp-overlay-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+// ── Popup ─────────────────────────────────────────────────────────────────────
+
+.cdp {
+    background: var(--yt-bg-primary);
+    border-radius: 12px;
+    padding: 28px 24px 20px;
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.24);
+    animation: cdp-in 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes cdp-in {
+    from { opacity: 0; transform: scale(0.9); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+// Icon
+
+.cdp__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: color-mix(in srgb, #f44336 12%, transparent);
+    color: #f44336;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+}
+
+// Text
+
+.cdp__title {
+    font-family: var(--yt-font);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--yt-text-primary);
+    margin: 0;
+}
+
+.cdp__desc {
+    font-family: var(--yt-font);
+    font-size: 13px;
+    color: var(--yt-text-tertiary);
+    margin: 0 0 8px;
+}
+
+// Actions
+
+.cdp__actions {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    margin-top: 4px;
+}
+
+.cdp__btn {
+    flex: 1;
+    padding: 9px 0;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-family: var(--yt-font);
+    font-size: 14px;
+    font-weight: 500;
+    transition: filter 0.15s, background 0.15s;
+
+    &--cancel {
+        background: var(--yt-bg-secondary);
+        color: var(--yt-text-primary);
+
+        &:hover {
+            background: var(--yt-bg-hover);
+        }
+    }
+
+    &--confirm {
+        background: #f44336;
+        color: #fff;
+
+        &:hover {
+            filter: brightness(1.1);
+        }
+
+        &:active {
+            filter: brightness(0.95);
+        }
+    }
+}
