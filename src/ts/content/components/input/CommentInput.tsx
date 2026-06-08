@@ -4,9 +4,9 @@ import useDIGet from "@Base/hook/useDIGet";
 import ChromeService from "@Base/service/chrome";
 import Comment from "@Base/dto/Comment";
 import useOAuth from "@Base/hook/useOAuth";
-import ENDPOINTS from "@Base/service/client/endpoints";
+import ENDPOINTS from "@Base/endpoints";
 import EventEmitter, {EVENTS} from "@Base/event/EventEmitter";
-import {SERVICE} from "@Base/di";
+import {DIServices} from "@Base/di";
 import useCurrentVideoId from "@Content/hook/useCurrentVideoId";
 
 const CommentInput = () => {
@@ -21,8 +21,8 @@ const CommentInput = () => {
 
     const { videoId } = useCurrentVideoId();
 
-    const chromeService = useDIGet<ChromeService>(SERVICE.ChromeService);
-    const emitter = useDIGet<EventEmitter>(SERVICE.EventEmitter);
+    const chromeService = useDIGet<ChromeService>(DIServices.ChromeService);
+    const emitter = useDIGet<EventEmitter>(DIServices.EventEmitter);
 
     useEffect(() => {
         const off = emitter.on(EVENTS.GIF_SELECTED, (gif: Gif) => {

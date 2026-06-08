@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 
 import DefaultCommentsPanel from "@Content/components/DefaultCommentsPanel";
 import GifsCommentsPanel from "@Content/components/GifsCommentsPanel";
@@ -10,8 +10,8 @@ type TabId = "default" | "gifs";
 const GCTabs = () => {
     const [activeTab, setActiveTab] = useState<TabId>("default");
 
-    setYoutubeTheme();
-
+    useEffect(() => {setYoutubeTheme();}, []);
+    
     return (
         <BaseProvidersWrapper>
             <div className="yt-root">

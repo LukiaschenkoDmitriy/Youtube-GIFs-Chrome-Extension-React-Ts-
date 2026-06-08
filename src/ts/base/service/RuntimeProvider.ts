@@ -1,6 +1,6 @@
 import ErrorResponse from "@Base/dto/Error";
 
-export default class ChromeService {
+export default class ChromeWorkerProvider {
     private URL: string;
 
     public constructor(URL: string) {

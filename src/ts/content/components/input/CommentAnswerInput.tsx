@@ -3,7 +3,7 @@ import Gif from "@Base/dto/Gif";
 import GifsPallet from "@Content/components/GifsPallet";
 import EventEmitter, {EVENTS} from "@Base/event/EventEmitter";
 import useDIGet from "@Base/hook/useDIGet";
-import {SERVICE} from "@Base/di";
+import {DIServices} from "@Base/di";
 
 interface CommentAnswerInputProps {
     commentId: string;
@@ -16,7 +16,7 @@ const CommentAnswerInput = ({ commentId, onSubmit, onCancel }: CommentAnswerInpu
     const [selectedGif, setSelectedGif] = useState<Gif | null>(null);
     const [gifPalletOpen, setGifPalletOpen] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
-    const emitter = useDIGet<EventEmitter>(SERVICE.EventEmitter);
+    const emitter = useDIGet<EventEmitter>(DIServices.EventEmitter);
 
     useEffect(() => {
         const off = emitter.on(EVENTS.GIF_ANSWER_SELECTED, (gif: Gif) => {

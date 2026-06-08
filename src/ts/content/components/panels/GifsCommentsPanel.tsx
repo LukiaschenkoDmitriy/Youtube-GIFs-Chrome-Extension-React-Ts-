@@ -1,6 +1,6 @@
+import Comments from "@Content/components/Comments";
 import GifsPallet from "@Content/components/GifsPallet";
 import CommentInput from "@Content/components/CommentInput";
-import Comments from "@Content/components/Comments";
 
 const GifsCommentsPanel = () => {
     return (

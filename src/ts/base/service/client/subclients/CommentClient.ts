@@ -1,5 +1,5 @@
 import Comment from "@Base/dto/Comment";
-import AbstractGCClient from "@Base/service/client/abstract_client";
+import AbstractGCClient from "@Base/service/client/AbstractGCClient";
 import ENDPOINTS from "@Base/service/client/endpoints";
 
 export default class CommentClient extends AbstractGCClient {

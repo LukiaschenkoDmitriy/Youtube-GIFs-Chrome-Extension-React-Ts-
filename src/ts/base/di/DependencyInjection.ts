@@ -1,6 +1,6 @@
 import {SERVICE} from "@Base/di";
 
-export class DependencyInstance {
+export class DependencyInstance{
     private readonly name: string;
     private instance: object
     public constructor(name: string, instance: object) {

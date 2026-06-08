@@ -1,6 +1,6 @@
 import Gif from "@Base/dto/Gif";
 import ErrorResponse from "@Base/dto/Error";
-import AbstractGCClient from "@Base/service/client/abstract_client";
+import AbstractGCClient from "@Base/service/client/AbstractGCClient";
 import ENDPOINTS from "@Base/service/client/endpoints";
 
 export default class GiphyClient extends AbstractGCClient {

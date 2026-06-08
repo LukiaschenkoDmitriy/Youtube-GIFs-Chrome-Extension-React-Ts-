@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import ChromeService from "@Base/service/chrome";
 import Comment from "@Base/dto/Comment";
 import useDIGet from "@Base/hook/useDIGet";
-import ENDPOINTS from "@Base/service/client/endpoints";
+import ENDPOINTS from "@Base/endpoints";
 import useOAuth from "@Base/hook/useOAuth";
 import EventEmitter, {EVENTS} from "@Base/event/EventEmitter";
-import {SERVICE} from "@Base/di";
+import {DIServices} from "@Base/di";
 import useCurrentVideoId from "@Content/hook/useCurrentVideoId";
 import Gif from "@Base/dto/Gif";
 import CommentItem from "@Content/components/CommentItem";
@@ -16,8 +16,8 @@ const Comments = () => {
     const [loading, setLoading] = useState(true);
 
     const { user } = useOAuth();
-    const chromeService = useDIGet<ChromeService>(SERVICE.ChromeService);
-    const emitter = useDIGet<EventEmitter>(SERVICE.EventEmitter);
+    const chromeService = useDIGet<ChromeService>(DIServices.ChromeService);
+    const emitter = useDIGet<EventEmitter>(DIServices.EventEmitter);
     const { videoId } = useCurrentVideoId();
 
     useEffect(() => {
