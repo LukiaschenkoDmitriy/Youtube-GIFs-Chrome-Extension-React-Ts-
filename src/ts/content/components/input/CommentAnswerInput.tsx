@@ -1,9 +1,10 @@
 import React, {useEffect, useRef, useState} from "react";
 import Gif from "@Base/dto/Gif";
-import GifsPallet from "@Content/components/GifsPallet";
-import EventEmitter, {EVENTS} from "@Base/event/EventEmitter";
-import useDIGet from "@Base/hook/useDIGet";
+import EVENTS from "@Base/events";
 import {DIServices} from "@Base/di";
+import useDIGet from "@Base/hook/useDIGet";
+import EventEmitter from "@Base/event/EventEmitter";
+import GifsPallet from "@Content/components/gif/GifsPallet";
 
 interface CommentAnswerInputProps {
     commentId: string;
@@ -15,7 +16,9 @@ const CommentAnswerInput = ({ commentId, onSubmit, onCancel }: CommentAnswerInpu
     const [text, setText] = useState("");
     const [selectedGif, setSelectedGif] = useState<Gif | null>(null);
     const [gifPalletOpen, setGifPalletOpen] = useState(false);
+
     const inputRef = useRef<HTMLInputElement>(null);
+
     const emitter = useDIGet<EventEmitter>(DIServices.EventEmitter);
 
     useEffect(() => {

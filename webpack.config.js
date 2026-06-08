@@ -20,6 +20,7 @@ export default {
             "@Base": path.resolve(__dirname, "src/ts/base"),
             "@PopUp": path.resolve(__dirname, "src/ts/popup"),
             "@Content": path.resolve(__dirname, "src/ts/content"),
+            "@Background": path.resolve(__dirname, "src/ts/background")
         }
     },
     module: {

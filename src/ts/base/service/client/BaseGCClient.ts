@@ -1,6 +1,6 @@
-import CommentClient from "@Base/service/client/CommentClient";
-import UserClient from "@Base/service/client/UserClient";
-import GiphyClient from "@Base/service/client/GiphyClient";
+import CommentClient from "@Base/service/client/subclients/CommentClient";
+import UserClient from "@Base/service/client/subclients/UserClient";
+import GiphyClient from "@Base/service/client/subclients/GiphyClient";
 
 export default class BaseGCClient {
     public comment: CommentClient;

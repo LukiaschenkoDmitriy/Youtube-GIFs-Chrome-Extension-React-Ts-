@@ -1,17 +1,17 @@
 import React, {useEffect, useState} from "react";
 
-import DefaultCommentsPanel from "@Content/components/DefaultCommentsPanel";
-import GifsCommentsPanel from "@Content/components/GifsCommentsPanel";
+import DefaultCommentsPanel from "@Content/components/panels/DefaultCommentsPanel";
+import GifsCommentsPanel from "@Content/components/panels/GifsCommentsPanel";
 import BaseProvidersWrapper from "@Base/wrapper/BaseProvidersWrapper";
 import setYoutubeTheme from "@Content/utils/theme";
 
 type TabId = "default" | "gifs";
 
-const GCTabs = () => {
+const Tabs = () => {
     const [activeTab, setActiveTab] = useState<TabId>("default");
 
     useEffect(() => {setYoutubeTheme();}, []);
-    
+
     return (
         <BaseProvidersWrapper>
             <div className="yt-root">
@@ -40,4 +40,4 @@ const GCTabs = () => {
     );
 }
 
-export default GCTabs;
+export default Tabs;

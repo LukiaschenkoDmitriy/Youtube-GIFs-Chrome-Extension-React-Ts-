@@ -4,11 +4,11 @@ import EVENTS from "@Base/events";
 import {DIServices} from "@Base/di";
 import ENDPOINTS from "@Base/endpoints";
 import useDIGet from "@Base/hook/useDIGet";
-import GifCard from "@Content/components/GifCard";
 import SearchIcon from "@Content/svg/SeachIcon";
 import EventEmitter from "@Base/event/EventEmitter";
 import useDebounce from "@Content/hook/useDebounce";
-import GifsLoading from "@Content/components/GifsLoading";
+import GifCard from "@Content/components/gif/GifCard";
+import GifsLoading from "@Content/components/gif/GifsLoading";
 import RuntimeProvider from "@Base/service/RuntimeProvider";
 
 export interface GifsPalletProps {
@@ -29,7 +29,7 @@ const GifsPallet = ({ type }: GifsPalletProps) => {
 
     useEffect(() => {
         setGifs([]);
-        if (search === "") {
+        if (debounceSearch === "") {
             runtime.fetch(ENDPOINTS.GIPHY.TRENDING.NAME, { offset: 0 }).then(setGifs)
         } else {
             runtime.fetch(ENDPOINTS.GIPHY.SEARCH.NAME, { search: debounceSearch, offset: 0 }).then(setGifs)

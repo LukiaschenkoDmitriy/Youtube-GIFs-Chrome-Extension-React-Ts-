@@ -103,7 +103,8 @@
     "paths": {
       "@Base/*": ["./src/ts/base/*"],
       "@PopUp/*": ["./src/ts/popup/*"],
-      "@Content/*": ["./src/ts/content/*"]
+      "@Content/*": ["./src/ts/content/*"],
+      "@Background/*": ["./src/ts/background/*"]
     }
   },
   "include": ["./src/**/*"],

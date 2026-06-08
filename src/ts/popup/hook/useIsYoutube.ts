@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 
 const useIsYoutube = () => {
-    const [isYoutube, setIsYoutube] = useState<boolean | null>(null); // null = ще перевіряємо
+    const [isYoutube, setIsYoutube] = useState<boolean | null>(null);
 
     useEffect(() => {
         chrome.tabs.query({ active: true, currentWindow: true }).then(([tab]: any) => {

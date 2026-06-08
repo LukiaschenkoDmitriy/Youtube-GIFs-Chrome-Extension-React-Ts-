@@ -5,8 +5,6 @@ export interface ObserverCallback {
 }
 
 export default class Observer {
-    public static DI_ID: string = "Observer";
-
     private callbacks: Map<string, ObserverCallback> = new Map();
     private callbacksStatus: Map<string, boolean> = new Map();
     private mutation: MutationObserver;

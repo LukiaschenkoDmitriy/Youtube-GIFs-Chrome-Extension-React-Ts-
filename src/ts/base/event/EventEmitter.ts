@@ -1,9 +1,3 @@
-export const EVENTS = {
-    COMMENT_ADDED: "COMMENT_ADDED",
-    GIF_SELECTED: "GIF_SELECTED",
-    GIF_ANSWER_SELECTED: "GIF_ANSWER_SELECTED",
-}
-
 export default class EventEmitter {
     private listeners: Record<string, Function[]> = {};
 

@@ -1,6 +1,6 @@
 import Comment from "@Base/dto/Comment";
-import AbstractGCClient from "@Base/service/client/AbstractGCClient";
-import ENDPOINTS from "@Base/service/client/endpoints";
+import AbstractGCClient from "@Base/service/client/subclients/AbstractGCClient";
+import ENDPOINTS from "@Base/endpoints";
 
 export default class CommentClient extends AbstractGCClient {
     public async getById(commentId: string) {

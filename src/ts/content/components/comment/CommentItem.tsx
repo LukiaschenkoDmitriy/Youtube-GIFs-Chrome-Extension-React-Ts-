@@ -1,11 +1,10 @@
-import User from "@Base/dto/User";
-import Comment from "@Base/dto/Comment";
 import {useState} from "react";
 import Gif from "@Base/dto/Gif";
-import CommentAnswerInput from "@Content/components/CommentAnswerInput";
+import User from "@Base/dto/User";
+import Comment from "@Base/dto/Comment";
 import {formatTime} from "@Content/utils/time";
-
-import ConfirmDeletePopup from "@Content/components/ConfirmDeletePopup";
+import CommentAnswerInput from "@Content/components/input/CommentAnswerInput";
+import ConfirmDeletePopup from "@Content/components/popup/ConfirmDeletePopup";
 
 interface CommentItemProps {
     c: Comment;

@@ -1,27 +1,25 @@
 import React, {useEffect, useRef, useState} from "react";
 import Gif from "@Base/dto/Gif";
-import useDIGet from "@Base/hook/useDIGet";
-import ChromeService from "@Base/service/chrome";
-import Comment from "@Base/dto/Comment";
-import useOAuth from "@Base/hook/useOAuth";
-import ENDPOINTS from "@Base/endpoints";
-import EventEmitter, {EVENTS} from "@Base/event/EventEmitter";
 import {DIServices} from "@Base/di";
+import Comment from "@Base/dto/Comment";
+import ENDPOINTS from "@Base/endpoints";
+import useOAuth from "@Base/hook/useOAuth";
+import useDIGet from "@Base/hook/useDIGet";
+import EventEmitter from "@Base/event/EventEmitter";
+import RuntimeProvider from "@Base/service/RuntimeProvider";
 import useCurrentVideoId from "@Content/hook/useCurrentVideoId";
+import EVENTS from "@Base/events";
 
 const CommentInput = () => {
-    const { user, getUser } = useOAuth();
-
-    useEffect(() => {getUser()}, []);
-
     const [text, setText] = useState("");
-    const inputRef = useRef<HTMLInputElement>(null);
-
     const [selectedGif, setSelectedGif] = useState<Gif | null>(null);
 
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    const { user } = useOAuth();
     const { videoId } = useCurrentVideoId();
 
-    const chromeService = useDIGet<ChromeService>(DIServices.ChromeService);
+    const runtime = useDIGet<RuntimeProvider>(DIServices.RuntimeProvider);
     const emitter = useDIGet<EventEmitter>(DIServices.EventEmitter);
 
     useEffect(() => {
@@ -42,7 +40,7 @@ const CommentInput = () => {
             user_id: user?.id
         })
 
-        chromeService.fetch(ENDPOINTS.COMMENT.CREATE.NAME, { comment }).then((comment) => {
+        runtime.fetch(ENDPOINTS.COMMENT.CREATE.NAME, { comment }).then((comment) => {
             setText("");
             setSelectedGif(null);
             emitter.emit(EVENTS.COMMENT_ADDED, comment);

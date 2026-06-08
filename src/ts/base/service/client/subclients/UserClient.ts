@@ -1,7 +1,7 @@
 import User from "@Base/dto/User";
 import ErrorResponse from "@Base/dto/Error";
-import AbstractGCClient from "@Base/service/client/AbstractGCClient";
-import ENDPOINTS from "@Base/service/client/endpoints";
+import AbstractGCClient from "@Base/service/client/subclients/AbstractGCClient";
+import ENDPOINTS from "@Base/endpoints";
 
 export default class UserClient extends AbstractGCClient {
     public async getCurrent(): Promise<User|ErrorResponse> {

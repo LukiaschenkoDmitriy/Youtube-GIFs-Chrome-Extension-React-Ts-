@@ -6,10 +6,8 @@ const useCurrentVideoId = () => {
     );
 
     useEffect(() => {
-        const getVideoId = () =>
-            new URLSearchParams(window.location.search).get("v");
+        const getVideoId = () => new URLSearchParams(window.location.search).get("v");
 
-        // YouTube міняє URL через pushState — слухаємо через chrome
         const handleMessage = (message: any) => {
             if (message.type === "URL_CHANGED") {
                 const id = new URLSearchParams(new URL(message.url).search).get("v");

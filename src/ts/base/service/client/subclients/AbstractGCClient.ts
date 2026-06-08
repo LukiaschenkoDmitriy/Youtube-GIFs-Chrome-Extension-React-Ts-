@@ -1,4 +1,4 @@
-import ENDPOINTS from "@Base/service/client/endpoints";
+import ENDPOINTS from "@Base/endpoints";
 
 export default abstract class AbstractGCClient {
     private URL: string;

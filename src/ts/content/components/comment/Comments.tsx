@@ -1,24 +1,26 @@
 import React, { useEffect, useState } from "react";
-import ChromeService from "@Base/service/chrome";
 import Comment from "@Base/dto/Comment";
 import useDIGet from "@Base/hook/useDIGet";
 import ENDPOINTS from "@Base/endpoints";
 import useOAuth from "@Base/hook/useOAuth";
-import EventEmitter, {EVENTS} from "@Base/event/EventEmitter";
+import EventEmitter from "@Base/event/EventEmitter";
 import {DIServices} from "@Base/di";
 import useCurrentVideoId from "@Content/hook/useCurrentVideoId";
 import Gif from "@Base/dto/Gif";
-import CommentItem from "@Content/components/CommentItem";
+import CommentItem from "@Content/components/comment/CommentItem";
 import {findRootId, removeFromTree, updateLikeInTree} from "@Content/utils/comment";
+import RuntimeProvider from "@Base/service/RuntimeProvider";
+import EVENTS from "@Base/events";
 
 const Comments = () => {
     const [comments, setComments] = useState<Comment[]>([]);
     const [loading, setLoading] = useState(true);
 
     const { user } = useOAuth();
-    const chromeService = useDIGet<ChromeService>(DIServices.ChromeService);
-    const emitter = useDIGet<EventEmitter>(DIServices.EventEmitter);
     const { videoId } = useCurrentVideoId();
+
+    const runtime = useDIGet<RuntimeProvider>(DIServices.RuntimeProvider);
+    const emitter = useDIGet<EventEmitter>(DIServices.EventEmitter);
 
     useEffect(() => {
         if (!videoId) return;
@@ -28,32 +30,29 @@ const Comments = () => {
             setComments((prev: Comment[]) => [...prev, comment]);
         });
 
-        chromeService.fetch(ENDPOINTS.COMMENT.GET_BY_VIDEO_ID.NAME, { videoId })
-            .then((data: any) => setComments(data ?? []))
-            .finally(() => setLoading(false));
+        runtime.fetch(ENDPOINTS.COMMENT.GET_BY_VIDEO_ID.NAME, { videoId }).then((data: any) => setComments(data ?? [])).finally(() => setLoading(false));
 
         return () => off();
     }, [videoId]);
 
-    // оновлення одного кореневого коментаря після reply
     const updateRootComment = (updated: Comment) => {
         setComments((prev) => prev.map((c) => c.id === updated.id ? updated : c));
     };
 
     const handleLike = (commentId: string) => {
-        chromeService.fetch(ENDPOINTS.COMMENT.LIKE.NAME, { commentId }).then(() => {
+        runtime.fetch(ENDPOINTS.COMMENT.LIKE.NAME, { commentId }).then(() => {
             setComments((prev) => updateLikeInTree(prev, commentId, "like"));
         });
     };
 
     const handleDislike = (commentId: string) => {
-        chromeService.fetch(ENDPOINTS.COMMENT.DISLIKE.NAME, { commentId }).then(() => {
+        runtime.fetch(ENDPOINTS.COMMENT.DISLIKE.NAME, { commentId }).then(() => {
             setComments((prev) => updateLikeInTree(prev, commentId, "dislike"));
         });
     };
 
     const handleDelete = (commentId: string) => {
-        chromeService.fetch(ENDPOINTS.COMMENT.DELETE.NAME, { commentId }).then(() => {
+        runtime.fetch(ENDPOINTS.COMMENT.DELETE.NAME, { commentId }).then(() => {
             setComments((prev) => removeFromTree(prev, commentId));
         });
     };
@@ -67,9 +66,9 @@ const Comments = () => {
             answer_to: commentId,
         });
 
-        chromeService.fetch(ENDPOINTS.COMMENT.CREATE.NAME, { comment }).then(() => {
+        runtime.fetch(ENDPOINTS.COMMENT.CREATE.NAME, { comment }).then(() => {
             const rootId = findRootId(comments, commentId);
-            chromeService.fetch(ENDPOINTS.COMMENT.GET_BY_ID.NAME, { commentId: rootId }).then((updated: any) => {
+            runtime.fetch(ENDPOINTS.COMMENT.GET_BY_ID.NAME, { commentId: rootId }).then((updated: any) => {
                 updateRootComment(updated);
             });
         });

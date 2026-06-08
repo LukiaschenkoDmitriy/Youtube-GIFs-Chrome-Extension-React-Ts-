@@ -1,7 +1,7 @@
 import Gif from "@Base/dto/Gif";
 import ErrorResponse from "@Base/dto/Error";
-import AbstractGCClient from "@Base/service/client/AbstractGCClient";
-import ENDPOINTS from "@Base/service/client/endpoints";
+import AbstractGCClient from "@Base/service/client/subclients/AbstractGCClient";
+import ENDPOINTS from "@Base/endpoints";
 
 export default class GiphyClient extends AbstractGCClient {
     public async getTrending(offset: number): Promise<Gif[]|ErrorResponse> {
