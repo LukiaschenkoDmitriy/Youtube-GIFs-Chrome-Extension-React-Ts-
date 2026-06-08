@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
 import Gif from "@Base/dto/Gif";
-import "./index.scss";
 import useDIGet from "@Base/hook/useDIGet";
 import ChromeService from "@Base/service/chrome";
 import Comment from "@Base/dto/Comment";

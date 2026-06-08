@@ -1,5 +1,3 @@
-import "./index.scss";
-
 const SKELETON_COUNT = 9;
 
 const GifsLoading = () => {

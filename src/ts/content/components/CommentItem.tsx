@@ -5,7 +5,6 @@ import Gif from "@Base/dto/Gif";
 import CommentAnswerInput from "@Content/components/CommentAnswerInput";
 import {formatTime} from "@Content/utils/time";
 
-import "./index.scss"
 import ConfirmDeletePopup from "@Content/components/ConfirmDeletePopup";
 
 interface CommentItemProps {

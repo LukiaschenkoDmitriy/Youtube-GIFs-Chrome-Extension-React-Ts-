@@ -1,6 +1,7 @@
 import Observer from "@Content/observer";
 import { DocumentService } from "@Content/service/DocumentService";
 import GCTabs from "@Content/components/GCTabs";
+import "./index.scss";
 
 const observer = new Observer();
 

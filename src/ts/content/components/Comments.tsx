@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ChromeService from "@Base/service/chrome";
 import Comment from "@Base/dto/Comment";
-import "./index.scss";
 import useDIGet from "@Base/hook/useDIGet";
 import ENDPOINTS from "@Base/service/client/endpoints";
 import useOAuth from "@Base/hook/useOAuth";

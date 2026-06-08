@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import Gif from "@Base/dto/Gif";
 import GifsPallet from "@Content/components/GifsPallet";
-import "./index.scss";
 import EventEmitter, {EVENTS} from "@Base/event/EventEmitter";
 import useDIGet from "@Base/hook/useDIGet";
 import {SERVICE} from "@Base/di";
@@ -21,28 +20,17 @@ const CommentAnswerInput = ({ commentId, onSubmit, onCancel }: CommentAnswerInpu
 
     useEffect(() => {
         const off = emitter.on(EVENTS.GIF_ANSWER_SELECTED, (gif: Gif) => {
-            handleSelectGif(gif);
+            setSelectedGif(gif);
+            setGifPalletOpen(false);
+            inputRef.current?.focus();
         })
 
         return () => off();
     }, []);
 
-    const handleSelectGif = (gif: Gif) => {
-        setSelectedGif(gif);
-        setGifPalletOpen(false);
-        inputRef.current?.focus();
-    };
-
-    const handleRemoveGif = () => {
-        setSelectedGif(null);
-    };
-
     const handleSubmit = () => {
         if (!text.trim() && !selectedGif) return;
         onSubmit(commentId, text, selectedGif);
-        setText("");
-        setSelectedGif(null);
-        setGifPalletOpen(false);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -68,7 +56,7 @@ const CommentAnswerInput = ({ commentId, onSubmit, onCancel }: CommentAnswerInpu
             {selectedGif && (
                 <div className="ca-input__gif-preview">
                     <img src={selectedGif.url} alt={selectedGif.title} className="ca-input__gif-img" />
-                    <button className="ca-input__gif-remove" onClick={handleRemoveGif}>
+                    <button className="ca-input__gif-remove" onClick={() => setSelectedGif(null)}>
                         <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
                             <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
                         </svg>

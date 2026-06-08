@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import "./index.scss";
 
 interface ConfirmDeletePopupProps {
     onConfirm: () => void;

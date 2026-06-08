@@ -2,11 +2,13 @@ import Gif from "@Base/dto/Gif";
 import GifCard from "@Content/components/GifCard";
 import GifsLoading from "@Content/components/GifsLoading";
 import React, {useEffect, useRef, useState} from "react";
-import gifsData from "./data.json";
 import useDIGet from "@Base/hook/useDIGet";
 import EventEmitter, {EVENTS} from "@Base/event/EventEmitter";
 import {SERVICE} from "@Base/di";
 import SearchIcon from "@Content/svg/SeachIcon";
+import ChromeService from "@Base/service/chrome";
+import ENDPOINTS from "@Base/service/client/endpoints";
+import useDebounce from "@Content/hook/useDebounce";
 
 export interface GifsPalletProps {
     type: "Default" | "Answer"
@@ -14,6 +16,7 @@ export interface GifsPalletProps {
 
 const GifsPallet = ({ type }: GifsPalletProps) => {
     const [search, setSearch] = useState("");
+    const debounceSearch = useDebounce(search, 1000);
     const [gifs, setGifs] = useState([]);
     const [focus, setFocus] = useState(false);
     const blurTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -21,26 +24,16 @@ const GifsPallet = ({ type }: GifsPalletProps) => {
 
     const emitter = useDIGet<EventEmitter>(SERVICE.EventEmitter);
 
-    // const chromeService = di.get(ChromeService.DI_ID) as ChromeService;
-
-    // const processData = (data: any) => {
-    //     console.log(data);
-    //     if (data instanceof ErrorResponse) {
-    //         console.error(data);
-    //         return;
-    //     }
-    //     setGifs(data);
-    // }
+    const chromeService = useDIGet<ChromeService>(SERVICE.ChromeService);
 
     useEffect(() => {
-        setGifs(gifsData.map(struct => new Gif(struct)) as any);
-        // setGifs([]);
-        // if (search === "") {
-        //     chromeService.fetch(GC_ENDPOINTS.GIPHY_TRENDING.url, { offset: 0 }).then(processData)
-        // } else {
-        //     chromeService.fetch(GC_ENDPOINTS.GIPHY_SEARCH.url, { search, offset: 0 }).then(processData)
-        // }
-    }, [search]);
+        setGifs([]);
+        if (search === "") {
+            chromeService.fetch(ENDPOINTS.GIPHY.TRENDING.NAME, { offset: 0 }).then(setGifs)
+        } else {
+            chromeService.fetch(ENDPOINTS.GIPHY.SEARCH.NAME, { search: debounceSearch, offset: 0 }).then(setGifs)
+        }
+    }, [debounceSearch]);
 
     const handleFocus = () => {
         if (blurTimeout.current) clearTimeout(blurTimeout.current);

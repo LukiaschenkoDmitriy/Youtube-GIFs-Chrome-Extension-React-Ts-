@@ -1,14 +1,16 @@
 import React, { useState } from "react";
-import "./index.scss";
 
 import DefaultCommentsPanel from "@Content/components/DefaultCommentsPanel";
 import GifsCommentsPanel from "@Content/components/GifsCommentsPanel";
 import BaseProvidersWrapper from "@Base/wrapper/BaseProvidersWrapper";
+import setYoutubeTheme from "@Content/utils/theme";
 
 type TabId = "default" | "gifs";
 
 const GCTabs = () => {
     const [activeTab, setActiveTab] = useState<TabId>("default");
+
+    setYoutubeTheme();
 
     return (
         <BaseProvidersWrapper>
