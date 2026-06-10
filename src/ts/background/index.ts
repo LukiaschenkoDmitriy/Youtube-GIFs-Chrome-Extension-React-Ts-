@@ -1,3 +1,4 @@
-import "@Background/services/ClientServiceWorker";
-import "@Background/services/OAuthLoginServiceWorker";
-import "@Background/services/YoutubeSPAWatcherWorker";
+import '@Background/listeners/ClientListener';
+import '@Background/listeners/PopUpOpenListener';
+import '@Background/listeners/OAuthLoginListener';
+import '@Background/listeners/YoutubeSPAWatcherListener';

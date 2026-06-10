@@ -1,20 +1,26 @@
 {
-  "name": "Youtube Gifs And Chat",
-  "description": "Youtube Gifs And Chat Extension",
-  "version": "1.0",
-  "manifest_version": 3,
-  "action": {
-    "default_popup": "popup.html"
-  },
-  "background": {
-    "service_worker": "dist/background.js"
-  },
-  "permissions": ["http://localhost:8080/*", "tabs"],
-  "host_permissions": ["http://localhost:8080/*", "https://www.youtube.com/*"],
-  "content_scripts": [
-    {
-      "matches": ["*://*.youtube.com/*"],
-      "js": ["dist/content.js"]
-    }
-  ]
+	"name": "Youtube GIFs",
+	"description": "GIFs for youtube comments",
+	"version": "1.0",
+	"manifest_version": 3,
+	"icons": {
+		"128": "favicon.png"
+	},
+	"action": {
+		"default_popup": "popup.html",
+		"default_icon": {
+			"128": "favicon.png"
+		}
+	},
+	"background": {
+		"service_worker": "dist/background.js"
+	},
+	"permissions": ["http://localhost:8080/*", "tabs"],
+	"host_permissions": ["http://localhost:8080/*", "https://www.youtube.com/*"],
+	"content_scripts": [
+		{
+			"matches": ["*://*.youtube.com/*"],
+			"js": ["dist/content.js"]
+		}
+	]
 }

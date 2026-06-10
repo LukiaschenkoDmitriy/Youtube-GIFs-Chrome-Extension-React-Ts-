@@ -23,9 +23,15 @@
     "@types/chrome": "^0.1.42",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
+    "@typescript-eslint/eslint-plugin": "^8.61.0",
+    "@typescript-eslint/parser": "^8.61.0",
     "babel-loader": "^10.1.1",
     "babel-plugin-minify-mangle-names": "^0.5.1",
     "css-loader": "^7.1.4",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "prettier": "^3.8.3",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "sass": "^1.100.0",
@@ -33,6 +39,7 @@
     "style-loader": "^4.0.0",
     "ts-loader": "^9.5.7",
     "typescript": "^6.0.3",
+    "typescript-eslint": "^8.61.0",
     "webpack": "^5.107.2",
     "webpack-cli": "^7.0.3"
   }

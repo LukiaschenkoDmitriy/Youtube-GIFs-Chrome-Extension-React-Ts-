@@ -1,11 +1,11 @@
-import {createElement} from "react";
-import {createRoot} from "react-dom/client";
+import { createElement } from 'react';
+import { createRoot } from 'react-dom/client';
 
-import App from "@PopUp/App";
+import App from '@PopUp/App';
 
-const app = document.getElementById("popup-react");
+const app: HTMLElement | null = document.getElementById('popup-react');
 
 if (app) {
-    const root = createRoot(app);
-    root.render(createElement(App))
+	const root = createRoot(app);
+	root.render(createElement(App));
 }
