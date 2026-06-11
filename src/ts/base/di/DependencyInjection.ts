@@ -1,17 +1,17 @@
-import DependencyInstance from '@Base/di/DependencyInstance';
-
 export default class DependencyInjection {
-	private instances: DependencyInstance[] = [];
+	private instances: Map<string, object> = new Map();
 
 	public add(alias: string, instance: object) {
-		this.instances.push(new DependencyInstance(alias, instance));
+		this.instances.set(alias, instance);
 	}
 
 	public get<T>(alias: string): T {
-		return this.instances
-			.filter((instance: DependencyInstance) => {
-				return instance.getName() === alias;
-			})[0]
-			?.getInstance<T>();
+		const instance = this.instances.get(alias);
+
+		if (!instance) {
+			throw new Error(`DependencyInjection: no instance registered for alias "${alias}"`);
+		}
+
+		return instance as T;
 	}
 }

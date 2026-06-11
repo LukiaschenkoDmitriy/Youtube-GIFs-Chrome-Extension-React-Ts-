@@ -33,22 +33,22 @@ const Comments = () => {
 			.finally(() => setLoading(false));
 
 		return () => off();
-	}, [videoId, user]);
+	}, [videoId, user, emitter]);
 
 	const updateRootComment = useCallback((updated: Comment) => {
 		setComments(prev => prev.map(c => (c.id === updated.id ? updated : c)));
 	}, []);
 
 	const handleLike = useCallback((commentId: string) => {
-		CommentClientProvider.like(commentId).then(() => setComments(prev => updateLikeInTree(prev, commentId, 'like')));
+		CommentClientProvider.like(commentId).then(ok => ok && setComments(prev => updateLikeInTree(prev, commentId, 'like')));
 	}, []);
 
 	const handleDislike = useCallback((commentId: string) => {
-		CommentClientProvider.dislike(commentId).then(() => setComments(prev => updateLikeInTree(prev, commentId, 'dislike')));
+		CommentClientProvider.dislike(commentId).then(ok => ok && setComments(prev => updateLikeInTree(prev, commentId, 'dislike')));
 	}, []);
 
 	const handleDelete = useCallback((commentId: string) => {
-		CommentClientProvider.delete(commentId).then(() => setComments(prev => removeFromTree(prev, commentId)));
+		CommentClientProvider.delete(commentId).then(ok => ok && setComments(prev => removeFromTree(prev, commentId)));
 	}, []);
 
 	const handleReplySubmit = useCallback(
@@ -61,13 +61,11 @@ const Comments = () => {
 				answer_to: commentId,
 			} as Comment;
 
-			updateRootComment(
-				(await CommentClientProvider.create(comment).then(() => {
-					return CommentClientProvider.getById(findRootId(comments, commentId));
-				})) as Comment
-			);
+			await CommentClientProvider.create(comment);
+			const root = await CommentClientProvider.getById(findRootId(comments, commentId));
+			if (root) updateRootComment(root);
 		},
-		[user]
+		[user, videoId, comments, updateRootComment]
 	);
 
 	if (loading) {

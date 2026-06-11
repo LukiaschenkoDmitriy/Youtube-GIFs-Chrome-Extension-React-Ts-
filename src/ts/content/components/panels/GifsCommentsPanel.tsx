@@ -1,9 +1,8 @@
 import Comments from '@Content/components/comment/Comments';
-import GifsPallet from '@Content/components/gif/GifsPallet';
+import GifsPalette from '@Content/components/gif/GifsPalette';
 import CommentInput from '@Content/components/input/CommentInput';
 import useOAuth from '@Base/hook/useOAuth';
 import LoginPrompt from '@Content/components/LoginPrompt';
-import { useEffect } from 'react';
 
 const GifsCommentsPanel = () => {
 	const { user } = useOAuth();
@@ -12,7 +11,7 @@ const GifsCommentsPanel = () => {
 		<div className="yt-gifs-panel">
 			{user ? (
 				<>
-					<GifsPallet type={'Default'} />
+					<GifsPalette type={'Default'} />
 					<CommentInput />
 				</>
 			) : (

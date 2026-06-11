@@ -12,7 +12,9 @@ chrome.runtime.onMessage.addListener((message: any, _sender: any, sendResponse: 
 		return true;
 	}
 
-	handler(message.endpoint, message.data ?? {}).then(sendResponse);
+	handler(message.endpoint, message.data ?? {})
+		.then(sendResponse)
+		.catch((e: unknown) => sendResponse({ status: false, message: e instanceof Error ? e.message : String(e) }));
 
 	return true;
 });

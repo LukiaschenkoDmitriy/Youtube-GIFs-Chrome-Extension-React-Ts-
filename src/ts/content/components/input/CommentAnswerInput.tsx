@@ -4,7 +4,7 @@ import EVENTS from '@Base/events';
 import { DIServices } from '@Base/di';
 import useDIGet from '@Base/hook/useDIGet';
 import EventEmitter from '@Base/event/EventEmitter';
-import GifsPallet from '@Content/components/gif/GifsPallet';
+import GifsPalette from '@Content/components/gif/GifsPalette';
 
 interface CommentAnswerInputProps {
 	commentId: string;
@@ -29,7 +29,7 @@ const CommentAnswerInput = ({ commentId, onSubmit, onCancel }: CommentAnswerInpu
 		});
 
 		return () => off();
-	}, []);
+	}, [emitter]);
 
 	const handleSubmit = () => {
 		if (!text.trim() && !selectedGif) return;
@@ -50,7 +50,7 @@ const CommentAnswerInput = ({ commentId, onSubmit, onCancel }: CommentAnswerInpu
 		<div className="ca-input">
 			{gifPalletOpen && (
 				<div className="ca-input__pallet">
-					<GifsPallet type={'Answer'} />
+					<GifsPalette type={'Answer'} />
 				</div>
 			)}
 

@@ -30,19 +30,28 @@ export default class BaseGCClient {
 		const url = this.buildURL(endpoint.url, data.p ?? {}, data.q ?? {});
 
 		const methodHandlers: Record<string, () => Promise<Response>> = {
-			POST: () => this._post(url, data.b ?? {}),
+			POST: () => this._send(url, 'POST', data.b ?? {}),
+			PATCH: () => this._send(url, 'PATCH', data.b ?? {}),
 			DELETE: () => this._delete(url),
 			GET: () => this._get(url),
 		};
 
-		const handler = methodHandlers[endpoint.method] ?? methodHandlers.GET;
-		const response = await handler();
+		const handler = methodHandlers[endpoint.method];
 
-		return await response.json();
+		if (!handler) {
+			return { error: `Unsupported method: ${endpoint.method}`, code: 0 };
+		}
+
+		try {
+			const response = await handler();
+			return await response.json();
+		} catch (e) {
+			return { error: e instanceof Error ? e.message : String(e), code: 0 };
+		}
 	}
 
-	protected async _post(url: string, body: Record<string, Primitive | null>): Promise<Response> {
-		return fetch(url, { method: 'POST', body: JSON.stringify(body), headers: DEFAULT_HEADERS });
+	protected async _send(url: string, method: 'POST' | 'PATCH', body: Record<string, Primitive | null>): Promise<Response> {
+		return fetch(url, { method, body: JSON.stringify(body), headers: DEFAULT_HEADERS });
 	}
 
 	protected async _delete(url: string): Promise<Response> {

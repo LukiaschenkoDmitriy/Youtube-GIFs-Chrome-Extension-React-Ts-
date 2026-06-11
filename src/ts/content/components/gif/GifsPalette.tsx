@@ -3,18 +3,18 @@ import Gif from '@Base/dto/Gif';
 import EVENTS from '@Base/events';
 import { DIServices } from '@Base/di';
 import useDIGet from '@Base/hook/useDIGet';
-import SearchIcon from '@Content/svg/SeachIcon';
+import SearchIcon from '@Content/svg/SearchIcon';
 import EventEmitter from '@Base/event/EventEmitter';
 import useDebounce from '@Content/hook/useDebounce';
 import GifCard from '@Content/components/gif/GifCard';
 import GifsLoading from '@Content/components/gif/GifsLoading';
 import GifClientProvider from '@Client/runtime/GifClientProvider';
 
-export interface GifsPalletProps {
+export interface GifsPaletteProps {
 	type: 'Default' | 'Answer';
 }
 
-const GifsPallet = ({ type }: GifsPalletProps) => {
+const GifsPalette = ({ type }: GifsPaletteProps) => {
 	const [gifs, setGifs] = useState<Gif[]>([]);
 	const [search, setSearch] = useState('');
 	const [focus, setFocus] = useState(false);
@@ -72,4 +72,4 @@ const GifsPallet = ({ type }: GifsPalletProps) => {
 	);
 };
 
-export default GifsPallet;
+export default GifsPalette;

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { OAuthContext } from '@Base/provider/OAuthProvider';
 import UserClientProvider from '@Client/runtime/UserClientProvider';
 

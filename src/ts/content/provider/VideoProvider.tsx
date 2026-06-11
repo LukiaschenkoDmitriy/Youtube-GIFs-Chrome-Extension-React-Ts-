@@ -1,5 +1,4 @@
 import React, { createContext, useEffect, useState } from 'react';
-import useOAuth from '@Base/hook/useOAuth';
 
 interface IVideoContext {
 	videoId: string | null;

@@ -28,6 +28,18 @@ export default class ChromeRuntimeProvider {
 		return responseData;
 	}
 
+	// For endpoints whose success payload is empty: true on success, false on any error
+	public static checkSuccessHandler<T>(json: GCClientResponse<T> | null): boolean {
+		if (json == null) return false;
+
+		if ('error' in json) {
+			console.error(`GCClient Error: ${json.error}`);
+			return false;
+		}
+
+		return true;
+	}
+
 	public static checkErrorHandler<T>(json: GCClientResponse<T> | null) {
 		if (json == null) {
 			console.error('chrome.runtime status failed, maybe you tried to use undefined handler');

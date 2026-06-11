@@ -11,16 +11,16 @@ export default class CommentClientProvider {
 		return await ChromeRuntimeProvider.fetch<null>(ENDPOINTS.COMMENT.CREATE, { ...comment }).then(ChromeRuntimeProvider.checkErrorHandler);
 	}
 
-	public static async like(commentId: string): Promise<null> {
-		return await ChromeRuntimeProvider.fetch<null>(ENDPOINTS.COMMENT.LIKE, { commentId }).then(ChromeRuntimeProvider.checkErrorHandler);
+	public static async like(commentId: string): Promise<boolean> {
+		return await ChromeRuntimeProvider.fetch<null>(ENDPOINTS.COMMENT.LIKE, { commentId }).then(ChromeRuntimeProvider.checkSuccessHandler);
 	}
 
-	public static async dislike(commentId: string): Promise<null> {
-		return await ChromeRuntimeProvider.fetch<null>(ENDPOINTS.COMMENT.DISLIKE, { commentId }).then(ChromeRuntimeProvider.checkErrorHandler);
+	public static async dislike(commentId: string): Promise<boolean> {
+		return await ChromeRuntimeProvider.fetch<null>(ENDPOINTS.COMMENT.DISLIKE, { commentId }).then(ChromeRuntimeProvider.checkSuccessHandler);
 	}
 
-	public static async delete(commentId: string): Promise<null> {
-		return await ChromeRuntimeProvider.fetch<null>(ENDPOINTS.COMMENT.DELETE, { commentId }).then(ChromeRuntimeProvider.checkErrorHandler);
+	public static async delete(commentId: string): Promise<boolean> {
+		return await ChromeRuntimeProvider.fetch<null>(ENDPOINTS.COMMENT.DELETE, { commentId }).then(ChromeRuntimeProvider.checkSuccessHandler);
 	}
 
 	public static async getById(commentId: string): Promise<Comment | null> {

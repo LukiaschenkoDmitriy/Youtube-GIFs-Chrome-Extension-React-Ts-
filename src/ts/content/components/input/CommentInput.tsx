@@ -26,7 +26,7 @@ const CommentInput = () => {
 		});
 
 		return () => off();
-	}, []);
+	}, [emitter]);
 
 	const handleSubmit = () => {
 		if (!selectedGif && !text.trim()) return;
