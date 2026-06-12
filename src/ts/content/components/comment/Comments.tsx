@@ -1,19 +1,21 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { DIServices } from '@Base/di';
 import Comment from '@Base/dto/Comment';
+import Gif from '@Base/dto/Gif';
+import EventEmitter from '@Base/event/EventEmitter';
+import EVENTS from '@Base/events';
 import useDIGet from '@Base/hook/useDIGet';
 import useOAuth from '@Base/hook/useOAuth';
-import EventEmitter from '@Base/event/EventEmitter';
-import { DIServices } from '@Base/di';
-import useCurrentVideoId from '@Content/hook/useCurrentVideoId';
-import Gif from '@Base/dto/Gif';
-import CommentItem from '@Content/components/comment/CommentItem';
-import { findRootId, removeFromTree, updateLikeInTree } from '@Content/utils/comment';
-import EVENTS from '@Base/events';
+import { CommentCounterContext } from '@Base/provider/CommentCounterProvider';
 import CommentClientProvider from '@Client/runtime/CommentClientProvider';
+import CommentItem from '@Content/components/comment/CommentItem';
+import useCurrentVideoId from '@Content/hook/useCurrentVideoId';
+import { findRootId, removeFromTree, updateLikeInTree } from '@Content/utils/comment';
+import React, { useCallback, useEffect, useState } from 'react';
 
 const Comments = () => {
 	const [comments, setComments] = useState<Comment[]>([]);
 	const [loading, setLoading] = useState(true);
+	const { setCount } = React.useContext(CommentCounterContext);
 
 	const { user } = useOAuth();
 	const { videoId } = useCurrentVideoId();
@@ -26,10 +28,12 @@ const Comments = () => {
 
 		const off = emitter.on(EVENTS.COMMENT_ADDED, (comment: Comment) => {
 			setComments((prev: Comment[]) => [...prev, comment]);
+			setCount(prev => prev + 1);
 		});
 
 		CommentClientProvider.getByVideoId(videoId)
 			.then(c => setComments(c ?? []))
+			.then(() => setCount(comments.length))
 			.finally(() => setLoading(false));
 
 		return () => off();

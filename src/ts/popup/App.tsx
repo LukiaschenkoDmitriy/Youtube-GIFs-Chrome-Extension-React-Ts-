@@ -1,14 +1,22 @@
 import React from 'react';
-import Main from '@PopUp/Main';
 import useIsYoutube from '@PopUp/hook/useIsYoutube';
-import NotYoutubeScreen from '@PopUp/components/NotYoutubeScreen';
-import BaseProvidersWrapper from '@Base/wrapper/BaseProvidersWrapper';
 import '@PopUp/App.css';
+import di from '@Base/di';
+import { DIContext } from '@Base/context/DIContext';
+import OAuthProvider from '@Base/provider/OAuthProvider';
+import Main from './Main';
+import NotYoutubeScreen from './components/NotYoutubeScreen';
 
 const App: React.FC = () => {
 	const isYoutube = useIsYoutube();
 
-	return <BaseProvidersWrapper>{isYoutube ? <Main /> : <NotYoutubeScreen />}</BaseProvidersWrapper>;
+	return (
+		<DIContext.Provider value={{ container: di }}>
+			<OAuthProvider>
+				{isYoutube ? <Main /> : <NotYoutubeScreen />}
+			</OAuthProvider>
+		</DIContext.Provider>
+	)
 };
 
 export default App;

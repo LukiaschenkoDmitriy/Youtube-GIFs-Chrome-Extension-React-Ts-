@@ -4,11 +4,17 @@ const DefaultCommentsPanel = () => {
 	const defaultPanelRef = useRef(null);
 
 	useEffect(() => {
-		const commentsBlock = document.querySelector('ytd-comments');
+		const videoCommentsBlock = document.querySelector('ytd-comments');
+		const shortCommentBlock = document.querySelector('ytd-engagement-panel-section-list-renderer[match-content-theme="ENGAGEMENT_PANEL_VISIBILITY_EXPANDED"]');
 
-		if (commentsBlock && defaultPanelRef.current) {
+		if (videoCommentsBlock && defaultPanelRef.current) {
 			const current = defaultPanelRef.current as HTMLElement;
-			current.appendChild(commentsBlock);
+			current.appendChild(videoCommentsBlock);
+		}
+
+		if (shortCommentBlock && defaultPanelRef.current) {
+			const current = defaultPanelRef.current as HTMLElement;
+			current.appendChild(shortCommentBlock);
 		}
 	}, []);
 
