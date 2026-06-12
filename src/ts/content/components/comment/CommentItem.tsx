@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import Comment from '@Base/dto/Comment';
 import Gif from '@Base/dto/Gif';
 import User from '@Base/dto/User';
-import Comment from '@Base/dto/Comment';
-import { formatTime } from '@Content/utils/time';
+import { CommentCounterContext } from '@Base/provider/CommentCounterProvider';
 import CommentAnswerInput from '@Content/components/input/CommentAnswerInput';
 import ConfirmDeletePopup from '@Content/components/popup/ConfirmDeletePopup';
 import ThumbDownIcon from '@Content/svg/ThumbDownIcon';
 import ThumbUpIcon from '@Content/svg/ThumbUpIcon';
+import { formatTime } from '@Content/utils/time';
+import React, { useContext, useState } from 'react';
 
 interface CommentItemProps {
 	c: Comment;
@@ -22,8 +23,16 @@ const CommentItem = React.memo(({ c, user, depth, onLike, onDislike, onDelete, o
 	const [isReplying, setIsReplying] = useState(false);
 	const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 	const [answersOpen, setAnswersOpen] = useState(false);
+	const { setCount } = useContext(CommentCounterContext);
 
 	const hasAnswers = c.answers && c.answers.length > 0;
+
+	const deleteHandler = (delTarget: string|null) => {
+		onDelete(delTarget ?? "");
+		if (!c.answer_to) {
+			setCount(prev => prev - 1);
+		}
+	}
 
 	return (
 		<div className={`gc-comment${depth > 0 ? ' gc-comment--reply' : ''}`}>
@@ -98,7 +107,7 @@ const CommentItem = React.memo(({ c, user, depth, onLike, onDislike, onDelete, o
 			{deleteTarget && (
 				<ConfirmDeletePopup
 					onConfirm={() => {
-						onDelete(deleteTarget);
+						deleteHandler(deleteTarget);
 						setDeleteTarget(null);
 					}}
 					onCancel={() => setDeleteTarget(null)}

@@ -8,20 +8,37 @@ export const VideoContext = createContext<IVideoContext>({
 	videoId: null,
 });
 
+// Watch pages keep the id in ?v=, shorts keep it in the path: /shorts/{id}
+const getVideoIdFromUrl = (url: string): string | null => {
+	try {
+		const parsed = new URL(url, window.location.origin);
+		return parsed.searchParams.get('v') ?? parsed.pathname.match(/^\/shorts\/([\w-]+)/)?.[1] ?? null;
+	} catch {
+		return null;
+	}
+};
+
 const VideoProvider = ({ children }: { children: React.ReactNode }) => {
-	const [videoId, setVideoId] = useState<string | null>(new URLSearchParams(window.location.search).get('v'));
+	const [videoId, setVideoId] = useState<string | null>(() => getVideoIdFromUrl(window.location.href));
 
 	useEffect(() => {
 		// eslint-disable-next-line
 		const handleMessage = (message: any) => {
 			if (message.type === 'URL_CHANGED') {
-				const id = new URLSearchParams(new URL(message.url).search).get('v');
-				setVideoId(id);
+				setVideoId(getVideoIdFromUrl(message.url));
 			}
 		};
 
+		// YouTube dispatches this on every SPA navigation, including scrolling between shorts
+		const handleNavigate = () => setVideoId(getVideoIdFromUrl(window.location.href));
+
 		chrome.runtime.onMessage.addListener(handleMessage);
-		return () => chrome.runtime.onMessage.removeListener(handleMessage);
+		document.addEventListener('yt-navigate-finish', handleNavigate);
+
+		return () => {
+			chrome.runtime.onMessage.removeListener(handleMessage);
+			document.removeEventListener('yt-navigate-finish', handleNavigate);
+		};
 	}, []);
 
 	return <VideoContext.Provider value={{ videoId }}>{children}</VideoContext.Provider>;

@@ -960,3 +960,15 @@ body.gc-theme-dark {
         background: color-mix(in srgb, var(--yt-accent) 18%, transparent);
     }
 }
+
+ytd-engagement-panel-section-list-renderer {
+	.yt-gifs-panel {
+		margin-top: 20px;
+		margin-left: 10px;
+		margin-right: 20px;
+	}
+}
+
+#gc-tabs-shorts {
+	overflow: auto;
+}

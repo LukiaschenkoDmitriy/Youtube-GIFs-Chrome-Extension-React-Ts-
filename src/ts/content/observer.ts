@@ -2,6 +2,9 @@ export interface ObserverCallback {
 	callback: (mutation: MutationRecord[], target: HTMLElement) => void;
 	target: (dc: Document) => HTMLElement | null;
 	interruptExpression: ((dc: Document) => boolean) | null;
+	// Recurring callbacks fire on every matching mutation and never let the observer disconnect.
+	// Needed for state that toggles back and forth (e.g. shorts panel visibility attributes).
+	recurring?: boolean;
 }
 
 export default class Observer {
@@ -12,8 +15,6 @@ export default class Observer {
 	public constructor() {
 		this.mutation = new MutationObserver((mutation: MutationRecord[]) => {
 			this.callbacks.forEach((callback: ObserverCallback, name: string) => {
-				this.tryToDisconnect();
-
 				if (callback.interruptExpression?.(document)) return;
 
 				const target = callback.target(document);
@@ -25,6 +26,8 @@ export default class Observer {
 				callback.callback(mutation, target);
 				this.callbacksStatus.set(name, true);
 			});
+
+			this.tryToDisconnect();
 		});
 	}
 
@@ -36,15 +39,16 @@ export default class Observer {
 	}
 
 	private tryToDisconnect() {
-		const array: boolean[] = [];
-		this.callbacksStatus.forEach((status: boolean) => array.push(status));
+		let done = true;
 
-		if (array.filter((status: boolean) => !status).length === 0) {
-			this.mutation.disconnect();
-		}
+		this.callbacks.forEach((callback: ObserverCallback, name: string) => {
+			if (callback.recurring || !this.callbacksStatus.get(name)) done = false;
+		});
+
+		if (done) this.mutation.disconnect();
 	}
 
-	public observe(element: HTMLElement, params: { childList?: boolean; subtree?: boolean } = {}) {
+	public observe(element: HTMLElement, params: MutationObserverInit = {}) {
 		this.mutation.observe(element, params);
 	}
 }

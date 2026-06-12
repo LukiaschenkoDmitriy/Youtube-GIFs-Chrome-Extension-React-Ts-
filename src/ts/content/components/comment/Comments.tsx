@@ -32,12 +32,14 @@ const Comments = () => {
 		});
 
 		CommentClientProvider.getByVideoId(videoId)
-			.then(c => setComments(c ?? []))
-			.then(() => setCount(comments.length))
+			.then(c => {
+				setComments(c ?? []);
+				setCount(c?.length ?? 0);
+			})
 			.finally(() => setLoading(false));
 
 		return () => off();
-	}, [videoId, user, emitter]);
+	}, [videoId, user, emitter, setCount]);
 
 	const updateRootComment = useCallback((updated: Comment) => {
 		setComments(prev => prev.map(c => (c.id === updated.id ? updated : c)));
