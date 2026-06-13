@@ -3,5 +3,5 @@ export default interface User {
 	name: string;
 	email: string;
 	picture: string;
-	custom_url: string;
+	custom_url?: string;
 }

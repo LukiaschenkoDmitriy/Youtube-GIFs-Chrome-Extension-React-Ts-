@@ -1,5 +1,5 @@
-import React from 'react';
 import User from '@Base/dto/User';
+import React from 'react';
 
 const Dashboard: React.FC<{ user: User; onLogout: () => Promise<void> }> = ({ user, onLogout }) => {
 	const initials = user.name
@@ -76,7 +76,7 @@ const Dashboard: React.FC<{ user: User; onLogout: () => Promise<void> }> = ({ us
 			>
 				<Section label="Profile">
 					<Row icon="ti-user" label="Name" value={user.name} />
-					<Row icon="ti-link" label="Custom URL" value={user.custom_url} valueColor="#185FA5" />
+					<Row icon="ti-link" label="Custom URL" value={user?.custom_url ?? "Unknown"} valueColor="#185FA5" />
 				</Section>
 
 				<Section label="Session">
