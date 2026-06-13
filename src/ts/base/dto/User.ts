@@ -4,4 +4,6 @@ export default interface User {
 	email: string;
 	picture: string;
 	custom_url?: string;
+	settings_videos_on: boolean;
+	settings_shorts_on: boolean;
 }
