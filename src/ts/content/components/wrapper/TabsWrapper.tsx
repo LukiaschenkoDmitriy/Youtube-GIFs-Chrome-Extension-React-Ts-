@@ -5,13 +5,13 @@ import OAuthProvider from "@Base/provider/OAuthProvider";
 import Tabs from "@Content/components/Tabs";
 import VideoProvider from "@Content/provider/VideoProvider";
 
-const TabsWrapper = () => {
+const TabsWrapper = ({ type }: { type: "videos" | "shorts" }) => {
     return (
         <DIContext.Provider value={{ container: di }}>
             <OAuthProvider>
                 <VideoProvider>
                     <CommentCounterProvider>
-                        <Tabs/>
+                        <Tabs type={type} />
                     </CommentCounterProvider>
                 </VideoProvider>
             </OAuthProvider>

@@ -8,7 +8,7 @@ const observer = new Observer();
 observer.addCallback('videoComments', {
 	target: (dc: Document) => dc.querySelector('ytd-comments'),
 	callback: (mutation: MutationRecord[], target: HTMLElement) => {
-		DocumentService.createAndInsertReactComponentBefore('div', 'gc-tabs', target, TabsWrapper);
+		DocumentService.createAndInsertReactComponentBefore('div', 'gc-tabs', target, TabsWrapper, { type: "videos" });
 	},
 	interruptExpression: (dc: Document) => !!dc.getElementById('gc-tabs'),
 });
@@ -37,7 +37,7 @@ observer.addCallback('shortsComments', {
 		if (shortsMount) DocumentService.unmountReactComponent(shortsMount);
 
 		const content = (panel.querySelector('#content') as HTMLElement | null) ?? panel;
-		shortsMount = DocumentService.mountReactComponentInto('div', 'gc-tabs-shorts', content, TabsWrapper);
+		shortsMount = DocumentService.mountReactComponentInto('div', 'gc-tabs-shorts', content, TabsWrapper, { type: "shorts" });
 	},
 	interruptExpression: null,
 });

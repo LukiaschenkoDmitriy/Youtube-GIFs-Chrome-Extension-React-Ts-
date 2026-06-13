@@ -4,20 +4,27 @@ import { CommentCounterContext } from '@Base/provider/CommentCounterProvider';
 import DefaultCommentsPanel from '@Content/components/panels/DefaultCommentsPanel';
 import GifsCommentsPanel from '@Content/components/panels/GifsCommentsPanel';
 import setYoutubeTheme from '@Content/utils/theme';
+import useOAuth from '@Base/hook/useOAuth';
 
 type TabId = 'default' | 'gifs';
 
-const Tabs = () => {
+const Tabs = ({ type }: {type: "shorts" | "videos"}) => {
 	const [activeTab, setActiveTab] = useState<TabId>('default');
+	const [shortsOn, setShortsOn] = useState<boolean>(false);
+	const [videosOn, setVieosOn] = useState<boolean>(false);
 	const { count } = useContext(CommentCounterContext);
+	const { user } = useOAuth()
 
 	useEffect(() => {
 		setYoutubeTheme();
 	}, []);
 
-	useEffect(() => { }, [count]);
+	useEffect(() => { 
+		setShortsOn(user?.settings_shorts_on == true && type == "shorts");
+		setVieosOn(user?.settings_videos_on == true && type == "videos");
+	 }, [count, user]);
 
-	return (
+	return (shortsOn || videosOn) && (
 		<div className="yt-root">
 			<div className="yt-tabs" role="tablist">
 				{(['default', 'gifs'] as TabId[]).map(tab => (

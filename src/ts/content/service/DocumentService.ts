@@ -11,10 +11,10 @@ export class DocumentService {
 		return element;
 	}
 
-	public static createAndInsertReactComponentBefore(tag: string, id: string, parent: HTMLElement, component: React.FC): void {
+	public static createAndInsertReactComponentBefore(tag: string, id: string, parent: HTMLElement, component: React.FC<any>, props: any = {}): void {
 		const element = DocumentService.createElementWithId(tag, id);
 		parent.before(element);
-		createRoot(element).render(createElement(component));
+		createRoot(element).render(createElement(component, props));
 	}
 
 	public static createAndInsertReactComponentAfter(tag: string, id: string, parent: HTMLElement, component: React.FC): void {
@@ -23,12 +23,12 @@ export class DocumentService {
 		createRoot(element).render(createElement(component));
 	}
 
-	public static mountReactComponentInto(tag: string, id: string, parent: HTMLElement, component: React.FC): ReactMount {
+	public static mountReactComponentInto(tag: string, id: string, parent: HTMLElement, component: React.FC<any>, props: any = {}): ReactMount {
 		const element = DocumentService.createElementWithId(tag, id);
 		parent.prepend(element);
 
 		const root = createRoot(element);
-		root.render(createElement(component));
+		root.render(createElement(component, props));
 
 		return { element, root };
 	}
