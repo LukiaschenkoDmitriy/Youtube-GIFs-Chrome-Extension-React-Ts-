@@ -1,11 +1,23 @@
-import React from 'react';
-import { TbArrowLeft, TbBrandYoutube, TbDeviceMobile } from 'react-icons/tb';
+import React, { useState } from 'react';
+import { TbArrowLeft, TbBrandYoutube, TbDeviceMobile, TbInfoCircle, TbRefresh } from 'react-icons/tb';
 import useOAuth from '@Base/hook/useOAuth';
 
 const Settings: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 	const { user, updateSettings } = useOAuth();
+	const [needsReload, setNeedsReload] = useState(false);
 
 	if (!user) return null;
+
+	const onChangeSettings = async (videosOn: boolean, shortsOn: boolean) => {
+		await updateSettings(videosOn, shortsOn);
+		setNeedsReload(true);
+	};
+
+	const reloadPage = async () => {
+		const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+		if (tab.id) chrome.tabs.reload(tab.id);
+		setNeedsReload(false);
+	};
 
 	return (
 		<div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -57,16 +69,59 @@ const Settings: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 						label="Videos"
 						description="Show comments on regular videos"
 						on={user.settings_videos_on}
-						onChange={videosOn => updateSettings(videosOn, user.settings_shorts_on)}
+						onChange={videosOn => onChangeSettings(videosOn, user.settings_shorts_on)}
 					/>
 					<ToggleRow
 						icon={<TbDeviceMobile size={16} />}
 						label="Shorts"
 						description="Show comments on Shorts"
 						on={user.settings_shorts_on}
-						onChange={shortsOn => updateSettings(user.settings_videos_on, shortsOn)}
+						onChange={shortsOn => onChangeSettings(user.settings_videos_on, shortsOn)}
 					/>
 				</Section>
+
+				{needsReload && (
+					<div
+						style={{
+							display: 'flex',
+							flexDirection: 'column',
+							gap: 10,
+							padding: '12px 14px',
+							borderRadius: 10,
+							background: '#E6F1FB',
+							border: '0.5px solid #B5D4F4',
+						}}
+					>
+						<div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+							<TbInfoCircle size={16} style={{ color: '#185FA5', flexShrink: 0, marginTop: 1 }} />
+							<p style={{ fontSize: 12, color: '#0C447C', margin: 0, lineHeight: 1.4 }}>
+								Reload the page to apply your changes
+							</p>
+						</div>
+						<button
+							onClick={reloadPage}
+							style={{
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'center',
+								gap: 7,
+								width: '100%',
+								padding: 10,
+								fontSize: 13,
+								fontWeight: 500,
+								color: '#fff',
+								background: '#185FA5',
+								border: 'none',
+								borderRadius: 10,
+								cursor: 'pointer',
+								fontFamily: 'inherit',
+							}}
+						>
+							<TbRefresh size={15} />
+							Reload page
+						</button>
+					</div>
+				)}
 			</div>
 		</div>
 	);
