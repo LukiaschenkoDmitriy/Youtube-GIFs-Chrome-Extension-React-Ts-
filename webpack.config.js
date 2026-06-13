@@ -1,15 +1,25 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import webpack from "webpack";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default (env = {}) => {
-	const isProduction = Boolean(env.production);
+	const getEnv = () => {
+		if (env.production) return "production";
+		if (env.server) return "server";
+		return "development"
+	}
 
 	return {
-		mode: isProduction ? 'production' : 'development',
-		devtool: isProduction ? false : 'source-map',
+		mode: env.production ? 'production' : 'development',
+		plugins: [
+			new webpack.DefinePlugin({
+				'process.env.NODE_ENV': JSON.stringify(getEnv()),
+			})
+		],
+		devtool: env.production ? false : 'source-map',
 		entry: {
 			popup: './src/ts/popup/index.ts',
 			content: './src/ts/content/index.ts',

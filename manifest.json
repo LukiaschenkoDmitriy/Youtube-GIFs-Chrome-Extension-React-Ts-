@@ -16,7 +16,7 @@
 		"service_worker": "dist/background.js"
 	},
 	"permissions": ["tabs"],
-	"host_permissions": ["http://localhost:8080/*", "https://www.youtube.com/*"],
+	"host_permissions": ["http://localhost:8080/*", "https://ygifs.dlukiashchenko.it.com/*", "https://www.youtube.com/*"],
 	"content_scripts": [
 		{
 			"matches": ["*://*.youtube.com/*"],
