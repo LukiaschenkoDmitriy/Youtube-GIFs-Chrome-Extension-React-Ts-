@@ -1,7 +1,8 @@
 import User from '@Base/dto/User';
 import React from 'react';
+import { TbSettings } from 'react-icons/tb';
 
-const Dashboard: React.FC<{ user: User; onLogout: () => Promise<void> }> = ({ user, onLogout }) => {
+const Dashboard: React.FC<{ user: User; onLogout: () => Promise<void>; onOpenSettings: () => void }> = ({ user, onLogout, onOpenSettings }) => {
 	const initials = user.name
 		.split(' ')
 		.map(w => w[0])
@@ -63,6 +64,26 @@ const Dashboard: React.FC<{ user: User; onLogout: () => Promise<void> }> = ({ us
 						Active
 					</span>
 				</div>
+				<button
+					onClick={onOpenSettings}
+					title="Settings"
+					style={{
+						marginLeft: 'auto',
+						width: 36,
+						height: 36,
+						borderRadius: 8,
+						border: '0.5px solid #B5D4F4',
+						background: '#fff',
+						color: '#0C447C',
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+						cursor: 'pointer',
+						flexShrink: 0,
+					}}
+				>
+					<TbSettings size={17} />
+				</button>
 			</div>
 
 			<div

@@ -15,7 +15,17 @@ const useOAuth = () => {
 		setUser(await UserClientProvider.login());
 	};
 
-	return { user, login, logout, loading };
+	const updateSettings = async (videosOn: boolean, shortsOn: boolean) => {
+		if (!user) return;
+		const ok = await UserClientProvider.updateSettings(videosOn, shortsOn);
+
+		if (ok) {
+			setUser({ ...user, settings_videos_on: videosOn, settings_shorts_on: shortsOn });
+		}
+		
+	};
+
+	return { user, login, logout, updateSettings, loading };
 };
 
 export default useOAuth;
