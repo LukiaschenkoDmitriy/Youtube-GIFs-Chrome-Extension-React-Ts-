@@ -14,4 +14,8 @@ export default class UserClientProvider {
 	public static async login(): Promise<null | User> {
 		return await ChromeRuntimeProvider.login().then(ChromeRuntimeProvider.checkErrorHandler);
 	}
+
+	public static async updateSettings(videosOn: boolean, shortsOn: boolean): Promise<null> {
+		return await ChromeRuntimeProvider.fetch<null>(ENDPOINTS.USER.SETTINGS, { videosOn, shortsOn }).then(ChromeRuntimeProvider.checkErrorHandler)
+	}
 }

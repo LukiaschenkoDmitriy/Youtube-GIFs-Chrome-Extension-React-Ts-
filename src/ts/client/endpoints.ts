@@ -12,6 +12,7 @@ const ENDPOINTS = {
 		LOGIN: { NAME: 'LOGIN', method: 'POST', url: `${AUTH_ENDPOINT}/login` } as EndpointType,
 		CURRENT: { NAME: 'CURRENT_USER', method: 'GET', url: '/e/users/current' } as EndpointType,
 		LOGOUT: { NAME: 'LOGOUT', method: 'POST', url: `${AUTH_ENDPOINT}/logout` } as EndpointType,
+		SETTINGS: { NAME: 'SETTINGS', method: 'PATCH', url: "/e/users/current/settings" } as EndpointType
 	},
 	COMMENT: {
 		CREATE: { NAME: 'CREATE_COMMENT', method: 'POST', url: '/e/comments' } as EndpointType,
