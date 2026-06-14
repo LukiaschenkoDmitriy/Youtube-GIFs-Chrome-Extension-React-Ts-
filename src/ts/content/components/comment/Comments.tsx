@@ -9,13 +9,19 @@ import { CommentCounterContext } from '@Base/provider/CommentCounterProvider';
 import CommentClientProvider from '@Client/runtime/CommentClientProvider';
 import CommentItem from '@Content/components/comment/CommentItem';
 import useCurrentVideoId from '@Content/hook/useCurrentVideoId';
+import { PaginationContext } from '@Content/provider/PaginationProvider';
 import { findRootId, removeFromTree, updateLikeInTree } from '@Content/utils/comment';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 const Comments = () => {
 	const [comments, setComments] = useState<Comment[]>([]);
 	const [loading, setLoading] = useState(true);
-	const { setCount } = React.useContext(CommentCounterContext);
+
+	const [loadingMore, setLoadingMore] = useState(false);
+	const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+	const { setCount } = useContext(CommentCounterContext);
+	const { nextCursor, setNextCursor, hasCursor, setHasCursor } = useContext(PaginationContext)
 
 	const { user } = useOAuth();
 	const { videoId } = useCurrentVideoId();
@@ -27,14 +33,16 @@ const Comments = () => {
 		setLoading(true);
 
 		const off = emitter.on(EVENTS.COMMENT_ADDED, (comment: Comment) => {
-			setComments((prev: Comment[]) => [...prev, comment]);
+			setComments((prev: Comment[]) => [comment, ...prev]);
 			setCount(prev => prev + 1);
 		});
 
-		CommentClientProvider.getByVideoId(videoId)
+		CommentClientProvider.getByVideoId(videoId, nextCursor, 20)
 			.then(c => {
-				setComments(c ?? []);
-				setCount(c?.length ?? 0);
+				setHasCursor(c?.meta.has_cursor ?? true)
+				setNextCursor(c?.meta.next_cursor ?? 0)
+				setComments(c?.entities ?? []);
+				setCount(c?.meta.comments_count ?? 0);
 			})
 			.finally(() => setLoading(false));
 
@@ -74,6 +82,35 @@ const Comments = () => {
 		[user, videoId, comments, updateRootComment]
 	);
 
+	const loadMore = useCallback(() => {
+		if (!videoId || loadingMore || !hasCursor) return;
+
+		setLoadingMore(true);
+		CommentClientProvider.getByVideoId(videoId, nextCursor, 20)
+			.then(c => {
+				setHasCursor(c?.meta.has_cursor ?? false);
+				setNextCursor(c?.meta.next_cursor ?? 0);
+				setComments(prev => [...prev, ...(c?.entities ?? [])]);
+			})
+			.finally(() => setLoadingMore(false));
+	}, [videoId, loadingMore, hasCursor, nextCursor, setHasCursor, setNextCursor]);
+
+	useEffect(() => {
+		const el = sentinelRef.current;
+		if (!el) return;
+
+		const observer = new IntersectionObserver(
+			entries => {
+				if (entries[0].isIntersecting) loadMore();
+			},
+			{ rootMargin: '200px' }
+		);
+
+		observer.observe(el);
+		return () => observer.disconnect();
+	}, [loadMore]);
+
+
 	if (loading) {
 		return (
 			<div className="gc-comments">
@@ -103,6 +140,24 @@ const Comments = () => {
 			{comments.map((c, i) => (
 				<CommentItem key={c.id ?? i} c={c} user={user} depth={0} onLike={handleLike} onDislike={handleDislike} onDelete={handleDelete} onReplySubmit={handleReplySubmit} />
 			))}
+
+			{hasCursor && (
+				<div ref={sentinelRef} className="gc-comments__sentinel">
+					{loadingMore && (
+						<div className="gc-comments">
+							{Array.from({ length: 4 }).map((_, i) => (
+								<div key={i} className="gc-comment-skeleton">
+									<div className="gc-comment-skeleton__avatar" />
+									<div className="gc-comment-skeleton__body">
+										<div className="gc-comment-skeleton__line gc-comment-skeleton__line--short" />
+										<div className="gc-comment-skeleton__line" />
+									</div>
+								</div>
+							))}
+						</div>
+					)}
+				</div>
+			)}
 		</div>
 	);
 };

@@ -1,10 +1,11 @@
 import ChromeRuntimeProvider from './ChromeRuntimeProvider';
 import Comment from '@Base/dto/Comment';
+import Pagination from '@Base/dto/Pagination';
 import ENDPOINTS from '@Client/endpoints';
 
 export default class CommentClientProvider {
-	public static async getByVideoId(videoId: string): Promise<Comment[] | null> {
-		return await ChromeRuntimeProvider.fetch<Comment[]>(ENDPOINTS.COMMENT.GET_BY_VIDEO_ID, { videoId }).then(ChromeRuntimeProvider.checkErrorHandler);
+	public static async getByVideoId(videoId: string, cursor: number, limit: number): Promise<Pagination<Comment> | null> {
+		return await ChromeRuntimeProvider.fetch<Pagination<Comment>>(ENDPOINTS.COMMENT.GET_BY_VIDEO_ID, { videoId, cursor, limit }).then(ChromeRuntimeProvider.checkErrorHandler);
 	}
 
 	public static async create(comment: Comment): Promise<Comment | null> {

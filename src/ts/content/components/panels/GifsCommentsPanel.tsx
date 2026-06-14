@@ -3,6 +3,7 @@ import GifsPalette from '@Content/components/gif/GifsPalette';
 import CommentInput from '@Content/components/input/CommentInput';
 import useOAuth from '@Base/hook/useOAuth';
 import LoginPrompt from '@Content/components/LoginPrompt';
+import PaginationProvider from '@Content/provider/PaginationProvider';
 
 const GifsCommentsPanel = () => {
 	const { user } = useOAuth();
@@ -18,7 +19,9 @@ const GifsCommentsPanel = () => {
 				<LoginPrompt />
 			)}
 
-			<Comments />
+			<PaginationProvider>
+				<Comments />
+			</PaginationProvider>
 		</div>
 	);
 };
