@@ -1,8 +1,9 @@
 export default interface Pagination<T> {
-    entities: T[]
+    entities: Record<string, T>;
+    roots: string[];
     meta: {
         next_cursor: number;
         has_cursor: boolean;
         comments_count: number;
-    }
+    };
 }

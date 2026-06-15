@@ -13,5 +13,5 @@ export default interface Comment {
 	created_at: string;
 	answer_to: string | null;
 	user: User | null;
-	answers: Comment[];
+	answers: string[];
 }

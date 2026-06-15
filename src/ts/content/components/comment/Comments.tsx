@@ -10,11 +10,12 @@ import CommentClientProvider from '@Client/runtime/CommentClientProvider';
 import CommentItem from '@Content/components/comment/CommentItem';
 import useCurrentVideoId from '@Content/hook/useCurrentVideoId';
 import { PaginationContext } from '@Content/provider/PaginationProvider';
-import { findRootId, removeFromTree, updateLikeInTree } from '@Content/utils/comment';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { addReply, applyReaction, CommentMap, removeComment } from '@Content/utils/comment';
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 const Comments = () => {
-	const [comments, setComments] = useState<Comment[]>([]);
+	const [entities, setEntities] = useState<CommentMap>({});
+	const [rootIds, setRootIds] = useState<string[]>([]);
 	const [loading, setLoading] = useState(true);
 
 	const [loadingMore, setLoadingMore] = useState(false);
@@ -33,7 +34,9 @@ const Comments = () => {
 		setLoading(true);
 
 		const off = emitter.on(EVENTS.COMMENT_ADDED, (comment: Comment) => {
-			setComments((prev: Comment[]) => [comment, ...prev]);
+			if (!comment) return;
+			setEntities(prev => ({ ...prev, [comment.id]: comment }));
+			setRootIds(prev => [comment.id, ...prev]);
 			setCount(prev => prev + 1);
 		});
 
@@ -41,7 +44,8 @@ const Comments = () => {
 			.then(c => {
 				setHasCursor(c?.meta.has_cursor ?? true)
 				setNextCursor(c?.meta.next_cursor ?? 0)
-				setComments(c?.entities ?? []);
+				setEntities(c?.entities ?? {});
+				setRootIds(c?.roots ?? []);
 				setCount(c?.meta.comments_count ?? 0);
 			})
 			.finally(() => setLoading(false));
@@ -49,20 +53,22 @@ const Comments = () => {
 		return () => off();
 	}, [videoId, user, emitter, setCount]);
 
-	const updateRootComment = useCallback((updated: Comment) => {
-		setComments(prev => prev.map(c => (c.id === updated.id ? updated : c)));
-	}, []);
-
 	const handleLike = useCallback((commentId: string) => {
-		CommentClientProvider.like(commentId).then(ok => ok && setComments(prev => updateLikeInTree(prev, commentId, 'like')));
+		setEntities(prev => applyReaction(prev, commentId, 'like'))
+		CommentClientProvider.like(commentId).then(ok => !ok && setEntities(prev => applyReaction(prev, commentId, 'like')));
 	}, []);
 
 	const handleDislike = useCallback((commentId: string) => {
-		CommentClientProvider.dislike(commentId).then(ok => ok && setComments(prev => updateLikeInTree(prev, commentId, 'dislike')));
+		setEntities(prev => applyReaction(prev, commentId, 'dislike'))
+		CommentClientProvider.dislike(commentId).then(ok => !ok && setEntities(prev => applyReaction(prev, commentId, 'dislike')));
 	}, []);
 
 	const handleDelete = useCallback((commentId: string) => {
-		CommentClientProvider.delete(commentId).then(ok => ok && setComments(prev => removeFromTree(prev, commentId)));
+		CommentClientProvider.delete(commentId).then(ok => {
+			if (!ok) return;
+			setEntities(prev => removeComment(prev, commentId));
+			setRootIds(prev => prev.filter(id => id !== commentId));
+		});
 	}, []);
 
 	const handleReplySubmit = useCallback(
@@ -75,11 +81,10 @@ const Comments = () => {
 				answer_to: commentId,
 			} as Comment;
 
-			await CommentClientProvider.create(comment);
-			const root = await CommentClientProvider.getById(findRootId(comments, commentId));
-			if (root) updateRootComment(root);
+			const created = await CommentClientProvider.create(comment);
+			if (created) setEntities(prev => addReply(prev, commentId, created));
 		},
-		[user, videoId, comments, updateRootComment]
+		[user, videoId]
 	);
 
 	const loadMore = useCallback(() => {
@@ -90,7 +95,8 @@ const Comments = () => {
 			.then(c => {
 				setHasCursor(c?.meta.has_cursor ?? false);
 				setNextCursor(c?.meta.next_cursor ?? 0);
-				setComments(prev => [...prev, ...(c?.entities ?? [])]);
+				setEntities(prev => ({ ...prev, ...(c?.entities ?? {}) }));
+				setRootIds(prev => [...prev, ...(c?.roots ?? [])]);
 			})
 			.finally(() => setLoadingMore(false));
 	}, [videoId, loadingMore, hasCursor, nextCursor, setHasCursor, setNextCursor]);
@@ -110,6 +116,7 @@ const Comments = () => {
 		return () => observer.disconnect();
 	}, [loadMore]);
 
+	const roots = useMemo(() => rootIds.map(id => entities[id]).filter(Boolean), [rootIds, entities]);
 
 	if (loading) {
 		return (
@@ -127,7 +134,7 @@ const Comments = () => {
 		);
 	}
 
-	if (!comments.length) {
+	if (!roots.length) {
 		return (
 			<div className="gc-comments gc-comments--empty">
 				<p className="gc-comments__empty-text">No GIF comments yet. Be the first!</p>
@@ -137,8 +144,8 @@ const Comments = () => {
 
 	return (
 		<div className="gc-comments">
-			{comments.map((c, i) => (
-				<CommentItem key={c.id ?? i} c={c} user={user} depth={0} onLike={handleLike} onDislike={handleDislike} onDelete={handleDelete} onReplySubmit={handleReplySubmit} />
+			{roots.map((c, i) => (
+				<CommentItem key={c.id ?? i} c={c} entities={entities} user={user} depth={0} onLike={handleLike} onDislike={handleDislike} onDelete={handleDelete} onReplySubmit={handleReplySubmit} />
 			))}
 
 			{hasCursor && (

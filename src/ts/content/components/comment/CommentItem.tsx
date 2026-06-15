@@ -6,11 +6,13 @@ import CommentAnswerInput from '@Content/components/input/CommentAnswerInput';
 import ConfirmDeletePopup from '@Content/components/popup/ConfirmDeletePopup';
 import ThumbDownIcon from '@Content/svg/ThumbDownIcon';
 import ThumbUpIcon from '@Content/svg/ThumbUpIcon';
+import { CommentMap } from '@Content/utils/comment';
 import { formatTime } from '@Content/utils/time';
 import React, { useContext, useState } from 'react';
 
 interface CommentItemProps {
 	c: Comment;
+	entities: CommentMap;
 	user: User | null;
 	depth: number;
 	onLike: (id: string) => void;
@@ -19,20 +21,21 @@ interface CommentItemProps {
 	onReplySubmit: (commentId: string, text: string, gif: Gif | null) => void;
 }
 
-const CommentItem = React.memo(({ c, user, depth, onLike, onDislike, onDelete, onReplySubmit }: CommentItemProps) => {
+const CommentItem = React.memo(({ c, entities, user, depth, onLike, onDislike, onDelete, onReplySubmit }: CommentItemProps) => {
 	const [isReplying, setIsReplying] = useState(false);
 	const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 	const [answersOpen, setAnswersOpen] = useState(false);
 	const { setCount } = useContext(CommentCounterContext);
 
-	const hasAnswers = c.answers && c.answers.length > 0;
+	const answers = c.answers.map(id => entities[id]).filter(Boolean);
+	const hasAnswers = answers.length > 0;
 
-	const deleteHandler = (delTarget: string|null) => {
-		onDelete(delTarget ?? "");
+	const deleteHandler = (delTarget: string | null) => {
+		onDelete(delTarget ?? '');
 		if (!c.answer_to) {
 			setCount(prev => prev - 1);
 		}
-	}
+	};
 
 	return (
 		<div className={`gc-comment${depth > 0 ? ' gc-comment--reply' : ''}`}>
@@ -92,14 +95,14 @@ const CommentItem = React.memo(({ c, user, depth, onLike, onDislike, onDelete, o
 						<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
 							<path d="M12 15.5l-6-6 1.41-1.41L12 12.67l4.59-4.58L18 9.5z" />
 						</svg>
-						{answersOpen ? 'Hide replies' : `${c.answers.length} ${c.answers.length === 1 ? 'reply' : 'replies'}`}
+						{answersOpen ? 'Hide replies' : `${answers.length} ${answers.length === 1 ? 'reply' : 'replies'}`}
 					</button>
 				)}
 
 				{hasAnswers && (depth > 0 || answersOpen) && (
 					<div className="gc-comment__answers">
-						{c.answers.map((answer, i) => (
-							<CommentItem key={answer.id ?? i} c={answer} user={user} depth={depth + 1} onLike={onLike} onDislike={onDislike} onDelete={onDelete} onReplySubmit={onReplySubmit} />
+						{answers.map((answer, i) => (
+							<CommentItem key={answer.id ?? i} c={answer} entities={entities} user={user} depth={depth + 1} onLike={onLike} onDislike={onDislike} onDelete={onDelete} onReplySubmit={onReplySubmit} />
 						))}
 					</div>
 				)}
