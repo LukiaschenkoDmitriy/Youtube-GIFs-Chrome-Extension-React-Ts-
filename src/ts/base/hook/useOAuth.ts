@@ -17,12 +17,13 @@ const useOAuth = () => {
 
 	const updateSettings = async (videosOn: boolean, shortsOn: boolean) => {
 		if (!user) return;
+		const prevUser = user;
+		setUser({ ...user, settings_videos_on: videosOn, settings_shorts_on: shortsOn });
 		const ok = await UserClientProvider.updateSettings(videosOn, shortsOn);
 
-		if (ok) {
-			setUser({ ...user, settings_videos_on: videosOn, settings_shorts_on: shortsOn });
+		if (!ok) {
+			setUser(prevUser)
 		}
-		
 	};
 
 	return { user, login, logout, updateSettings, loading };
