@@ -706,6 +706,24 @@ body.gc-theme-dark {
 		opacity: 0.4;
 		cursor: default;
 	}
+	&--loading {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 110px;
+		opacity: 1;
+		cursor: default;
+	}
+}
+
+.ca-input__spinner {
+	display: inline-block;
+	width: 14px;
+	height: 14px;
+	border: 2px solid rgba(255, 255, 255, 0.4);
+	border-top-color: #fff;
+	border-radius: 50%;
+	animation: spin 0.7s linear infinite;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════

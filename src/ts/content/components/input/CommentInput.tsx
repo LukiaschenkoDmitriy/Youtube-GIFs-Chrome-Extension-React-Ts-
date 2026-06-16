@@ -12,6 +12,7 @@ import CommentClientProvider from '@Client/runtime/CommentClientProvider';
 const CommentInput = () => {
 	const [text, setText] = useState('');
 	const [selectedGif, setSelectedGif] = useState<Gif | null>(null);
+	const [loading, setLoading] = useState<boolean>(false)
 
 	const inputRef = useRef<HTMLInputElement>(null);
 
@@ -30,6 +31,7 @@ const CommentInput = () => {
 
 	const handleSubmit = () => {
 		if (!selectedGif && !text.trim()) return;
+		setLoading(true);
 
 		const comment = {
 			video_id: videoId,
@@ -42,7 +44,7 @@ const CommentInput = () => {
 			setText('');
 			setSelectedGif(null);
 			emitter.emit(EVENTS.COMMENT_ADDED, comment);
-		});
+		}).finally(() => setLoading(false));
 	};
 
 	const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -72,16 +74,16 @@ const CommentInput = () => {
 				)}
 
 				<div className="gc-compose__input-row">
-					<input ref={inputRef} value={text} onChange={e => setText(e.target.value)} onKeyDown={handleKeyDown} placeholder="Add a comment..." className="gc-compose__text-input" />
+					<input ref={inputRef} value={text} onChange={e => setText(e.target.value)} onKeyDown={handleKeyDown} placeholder="Add a comment..." className="gc-compose__text-input" disabled={loading} />
 
 					<div className="gc-compose__actions">
 						{(selectedGif || text.trim()) && (
 							<div className="ca-input__actions">
-								<button className="ca-input__cancel-btn" onClick={onCancel}>
+								<button className="ca-input__cancel-btn" onClick={onCancel} disabled={loading}>
 									Cancel
 								</button>
-								<button className={`ca-input__submit-btn${!text.trim() && !selectedGif ? ' ca-input__submit-btn--disabled' : ''}`} onClick={handleSubmit} disabled={!text.trim() && !selectedGif}>
-									Send Comment
+								<button className={`ca-input__submit-btn${loading ? ' ca-input__submit-btn--loading' : ''}${!text.trim() && !selectedGif ? ' ca-input__submit-btn--disabled' : ''}`} onClick={handleSubmit} disabled={loading || (!text.trim() && !selectedGif)}>
+									{loading ? <span className="ca-input__spinner" /> : 'Send Comment'}
 								</button>
 							</div>
 						)}
